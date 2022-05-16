@@ -36,7 +36,7 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claimmysql
-   ----
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
