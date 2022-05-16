@@ -4,10 +4,7 @@ metadata:
   name: wordpress-mysql
   labels:
     app: wordpress
-  annotations:
 spec:
-  matchLabels:
-    app: wordpress
   ports:
     - port: 3306
   selector:
