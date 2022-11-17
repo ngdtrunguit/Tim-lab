@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: helm-guestbook
+      app: test-ci
       release: release-name
   strategy:
     blueGreen:
