@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-ci
+  labels:
+    app: test-ci
+    chart: test-ci-0.1.0
+    release: release-name
+    heritage: Helm
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: test-ci
+    release: release-name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-ci-preview
+  labels:
+    app: test-ci
+    chart: test-ci-0.1.0
+    release: release-name
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: test-ci
+    release: release-name
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: release-name-test-ci
+  labels:
+    app: test-ci
+    chart: test-ci-0.1.0
+    release: release-name
+    heritage: Helm
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: helm-guestbook
+      release: release-name
+  strategy:
+    blueGreen:
+      activeService: release-name-test-ci
+      previewService: release-name-test-ci-preview
+  template:
+    metadata:
+      labels:
+        app: test-ci
+        release: release-name
+    spec:
+      containers:
+        - name: test-ci
+          image: {{ .Values.image.repository}}:{{ Values.image.tag}}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
