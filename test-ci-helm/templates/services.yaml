@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-ci
+  name: release-name-test-ci
   labels:
     app: test-ci
     chart: test-ci-0.1.0
@@ -21,7 +21,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-ci-preview
+  name: release-name-test-ci-preview
   labels:
     app: test-ci
     chart: test-ci-0.1.0
