@@ -54,8 +54,10 @@ jobs:
         valueFile: 'test-ci/values.yaml'
         branch: main
         targetBranch: main
+        masterBranchName: main
         createPR: 'true'
         description: Test GitHub Action
+        token: ${{ secrets.GH_TOKEN }}
         message: 'Update All Images' 
         title: 'Version Updates '
         changes: |
