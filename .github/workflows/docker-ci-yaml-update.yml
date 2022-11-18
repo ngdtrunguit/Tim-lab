@@ -57,6 +57,7 @@ jobs:
         masterBranchName: main
         createPR: 'true'
         description: Test GitHub Action
+        commitChange: true
         token: ${{ secrets.GH_TOKEN }}
         message: 'Update All Images' 
         title: 'Version Updates '
