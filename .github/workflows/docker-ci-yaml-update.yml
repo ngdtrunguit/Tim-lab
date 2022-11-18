@@ -43,22 +43,13 @@ jobs:
     - name: Update Image Version in the related HelmChart values.yaml
       uses: fjogeleit/yaml-update-action@main
       with:
-        # valueFile: 'test-ci/values.yaml'
-        # propertyPath: 'image.tag'
-        # value: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} 
-        # branch: test
-        # targetBranch: main
-        # createPR: true
-        # message: 'Update Image Version to ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-
         valueFile: 'test-ci/values.yaml'
         branch: main
         targetBranch: main
         masterBranchName: main
-        description: Test GitHub Action
         commitChange: true
         token: ${{ secrets.GH_TOKEN }}
-        message: 'Update All Images' 
+        message: 'Update CI Images' 
         changes: |
           {
             "test-ci/values.yaml": {
