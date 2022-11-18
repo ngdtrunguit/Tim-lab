@@ -46,7 +46,8 @@ jobs:
         valueFile: 'test-ci/values.yaml'
         propertyPath: 'image.tag'
         value: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} 
-        branch: deployment/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} 
+        branch: test
         targetBranch: main
         createPR: true
         message: 'Update Image Version to ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
+        WorkDir: test-ci
