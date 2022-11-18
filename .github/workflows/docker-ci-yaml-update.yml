@@ -55,12 +55,10 @@ jobs:
         branch: main
         targetBranch: main
         masterBranchName: main
-        createPR: 'true'
         description: Test GitHub Action
         commitChange: true
         token: ${{ secrets.GH_TOKEN }}
         message: 'Update All Images' 
-        title: 'Version Updates '
         changes: |
           {
             "test-ci/values.yaml": {
