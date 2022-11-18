@@ -50,4 +50,4 @@ jobs:
         targetBranch: main
         createPR: true
         message: 'Update Image Version to ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
-        WorkDir: test-ci
+#        WorkDir: test-ci
