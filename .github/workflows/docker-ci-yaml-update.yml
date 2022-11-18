@@ -52,7 +52,7 @@ jobs:
         # message: 'Update Image Version to ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
 
         valueFile: 'test-ci/values.yaml'
-        branch: deployment
+        branch: main
         targetBranch: main
         createPR: 'true'
         description: Test GitHub Action
