@@ -8,11 +8,6 @@ spec:
   containers:
   - name: git
     image: linuxserver/yq
-  - name: kubectl
-    image: joshendriks/alpine-k8s
-    command:
-    - /bin/cat
-    tty: true
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
@@ -60,7 +55,7 @@ spec:
               sh '''#!/busybox/sh
               echo "FROM jenkins/inbound-agent:latest" > Dockerfile
               /kaniko/executor --context `pwd` \
-                             --destination ngdtrunguit/test-ci:1.0${BUILD_NUMBER}
+                             --destination ngdtrunguit/test-ci:1.0.${BUILD_NUMBER}
               '''
             }
           }
