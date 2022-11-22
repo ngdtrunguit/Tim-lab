@@ -1,0 +1,106 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: git
+    image: linuxserver/yq
+  - name: kubectl
+    image: joshendriks/alpine-k8s
+    command:
+    - /bin/cat
+    tty: true
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 9999999
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /kaniko/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: docker-credentials
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
+    }
+  }
+
+  stages {
+    stage ('checkout'){
+      steps {
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'jenkins-kind']]]], userRemoteConfigs: [[url: 'https://github.com/ngdtrunguit/Tim-lab.git']]])
+      }
+    }
+    stage('Kaniko Build & Push Image') {
+      steps {
+        container(name: 'kaniko', shell: '/busybox/sh') {
+
+          script {
+            sh 'ls'
+            sh 'pwd'
+            // sh '''
+            // /kaniko/executor --dockerfile `pwd`/Dockerfile \
+            //                  --context `pwd` \
+            //                  --destination=trungnguyenprojectcrp2.acr.io/test-ci:1.0}
+            // '''
+            dir('jenkins-kind') {
+              sh 'pwd'
+              sh 'ls'
+              sh '''#!/busybox/sh
+              echo "FROM jenkins/inbound-agent:latest" > Dockerfile
+              /kaniko/executor --context `pwd` \
+                             --destination ngdtrunguit/test-ci:1.0${BUILD_NUMBER}
+              '''
+            }
+          }
+        }
+      }
+    }
+//     stage('Update tag in YAML') {
+//       steps {
+//         container(name: 'git') {
+//           withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+//               sh """
+//               apk update && apk add git && apk add yq
+//               git init
+//               git config --global --add safe.directory /home/jenkins/agent/workspace/demo
+//               git clone https://github.com/ngdtrunguit/forCRP2.0.git
+//               cd jenkins-test/helm/
+//               git config user.email ngdtrunguit@gmail.com
+//               git config user.name ngdtrunguit
+//               cat values.yaml
+//               export BUILD_NUMBER=1.0.${BUILD_NUMBER}
+//               yq eval ".image.tag = \"${BUILD_NUMBER}\""  -i values.yaml
+//               cat values.yaml
+//               git add . -m "Update app image tag to ${BUILD_NUMBER}"
+//               git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}forCRP2.0.git HEAD:main
+
+//               """
+//         }
+//       }
+//     }
+//   }
+
+    // stage('Deploy App to Kubernetes') {     
+    //   steps {
+    //     container('kubectl') {
+    //       withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
+    //         sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
+    //         sh 'kubectl apply -f myweb.yaml'
+    //       }
+    //     }
+    //   }
+    // }
+  }
+}
