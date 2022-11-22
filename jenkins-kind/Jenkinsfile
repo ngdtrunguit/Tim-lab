@@ -81,7 +81,9 @@ spec:
               cat values.yaml
               yq eval '.image.tag = env(TAG)' -i values.yaml
               cat values.yaml
-              git add . -m "Update app image tag to ${BUILD_NUMBER}"
+              echo $TAG
+              git add . 
+              git commit -m "Update app image tag to $TAG"
               git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}forCRP2.0.git HEAD:main
 
               """
