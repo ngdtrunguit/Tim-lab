@@ -62,30 +62,33 @@ spec:
         }
       }
     }
-//     stage('Update tag in YAML') {
-//       steps {
-//         container(name: 'git') {
-//           withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-//               sh """
-//               apk update && apk add git && apk add yq
-//               git init
-//               git config --global --add safe.directory /home/jenkins/agent/workspace/demo
-//               git clone https://github.com/ngdtrunguit/forCRP2.0.git
-//               cd jenkins-test/helm/
-//               git config user.email ngdtrunguit@gmail.com
-//               git config user.name ngdtrunguit
-//               cat values.yaml
-//               export BUILD_NUMBER=1.0.${BUILD_NUMBER}
-//               yq eval ".image.tag = \"${BUILD_NUMBER}\""  -i values.yaml
-//               cat values.yaml
-//               git add . -m "Update app image tag to ${BUILD_NUMBER}"
-//               git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}forCRP2.0.git HEAD:main
+    stage('Update tag in YAML') {
+      environment {
+        TAG = "1.0.${BUILD_NUMBER}"
+       // Update above variables with your user details
+      }
+      steps {
+        container(name: 'git') {
+          withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+              sh """
+              apk update && apk add git && apk add yq
+              git init
+              git config --global --add safe.directory /home/jenkins/agent/workspace/demo
+              git clone https://github.com/ngdtrunguit/Tim-lab.git
+              cd jenkins-kind/helm/
+              git config user.email ngdtrunguit@gmail.com
+              git config user.name ngdtrunguit
+              cat values.yaml
+              yq eval '.image.tag = env(TAG)' -i values.yaml
+              cat values.yaml
+              git add . -m "Update app image tag to ${BUILD_NUMBER}"
+              git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}forCRP2.0.git HEAD:main
 
-//               """
-//         }
-//       }
-//     }
-//   }
+              """
+        }
+      }
+    }
+  }
 
     // stage('Deploy App to Kubernetes') {     
     //   steps {
