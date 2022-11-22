@@ -84,7 +84,7 @@ spec:
               echo $TAG
               git add . 
               git commit -m "Update app image tag to $TAG"
-              git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}/forCRP2.0.git
+              git push https://${GIT_PASSWORD}@github.com/${GIT_USERNAME}/forCRP2.0.git HEAD:main
 
               """
         }
