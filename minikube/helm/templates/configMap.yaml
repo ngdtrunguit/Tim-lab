@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.image.name }}-{{ .Values.deployment.depRegion }}
+data:
+  # Configuration values can be set as key-value properties
+{{ if eq .Values.deployment.depRegion "de"}}
+  de: Friend
+{{ else }}
+  en: World
+{{ end }}
